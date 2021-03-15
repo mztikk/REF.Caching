@@ -38,16 +38,20 @@ namespace REF.Caching
 
         public void Add(TKey key, TValue value)
         {
-            if (_cache.TryAdd(key, value))
-            {
-                _logger.LogDebug("'{key}' added to {Type} with value '{value}'", key, GetType(), value);
-            }
-            else
-            {
-                _logger.LogDebug("Failed to add '{key}' to {Type} with value '{value}'", key, GetType(), value);
-            }
+            value = InternalAdd(key, value);
+            _logger.LogDebug("'{key}' added to {Type} with value '{value}'", key, GetType(), value);
         }
 
         public void Remove(TKey key) => _cache.TryRemove(key, out _);
+
+        protected virtual TValue InternalAdd(TKey key, TValue value)
+        {
+            if (!_cache.TryAdd(key, value))
+            {
+                _logger.LogDebug("Failed to add '{key}' to {Type} with value '{value}'", key, GetType(), value);
+            }
+
+            return value;
+        }
     }
 }

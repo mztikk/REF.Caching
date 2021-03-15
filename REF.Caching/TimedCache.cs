@@ -37,6 +37,8 @@ namespace REF.Caching
             return val;
         }
 
+        protected override TValue InternalAdd(TKey key, TValue value) => base.InternalAdd(key, value with { CreatedAt = DateTime.UtcNow });
+
         protected virtual bool IsExpired(Creation creation) => DateTime.UtcNow - creation.CreatedAt > Expiry;
     }
 }

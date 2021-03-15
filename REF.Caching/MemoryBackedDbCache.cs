@@ -55,8 +55,7 @@ namespace REF.Caching
             {
                 if (Find(key) is null)
                 {
-                    _dbContext.Add(value);
-                    _memoryCache.Add(key, value);
+                    value = InternalAdd(key, value);
                     _logger.LogDebug("'{key}' added to {Type} with value '{value}'", key, GetType(), value.ToString());
                     _dbContext.SaveChanges();
                 }
@@ -99,5 +98,13 @@ namespace REF.Caching
         }
 
         protected virtual TValue? DirectFind(TKey key) => _dbContext.Find<TValue>(key);
+
+        protected virtual TValue InternalAdd(TKey key, TValue value)
+        {
+            _dbContext.Add(value);
+            _memoryCache.Add(key, value);
+
+            return value;
+        }
     }
 }
