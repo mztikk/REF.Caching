@@ -10,9 +10,9 @@ namespace REF.Caching
     where TKey : notnull
     {
         private readonly ConcurrentDictionary<TKey, TValue> _cache = new();
-        private readonly ILogger<TValue> _logger;
+        private readonly ILogger<MemoryCache<TValue, TKey>> _logger;
 
-        public MemoryCache(ILogger<TValue> logger) => _logger = logger;
+        public MemoryCache(ILogger<MemoryCache<TValue, TKey>> logger) => _logger = logger;
 
         public TValue? Get(TKey key)
         {
