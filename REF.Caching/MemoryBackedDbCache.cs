@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -17,8 +16,6 @@ namespace REF.Caching
         protected readonly TDbContext _dbContext;
         protected readonly MemoryCache<TValue, TKey> _memoryCache;
 
-        protected readonly Type _entityType;
-
         public MemoryBackedDbCache(
             ILogger<MemoryBackedDbCache<TValue, TKey, TDbContext>> logger,
             TDbContext dbContext,
@@ -27,8 +24,6 @@ namespace REF.Caching
             _logger = logger;
             _dbContext = dbContext;
             _memoryCache = memoryCache;
-
-            _entityType = typeof(TValue);
         }
 
         public TValue? Get(TKey key)
@@ -103,6 +98,6 @@ namespace REF.Caching
             return null;
         }
 
-        protected virtual TValue? DirectFind(TKey key) => _dbContext.Find(_entityType, key) as TValue;
+        protected virtual TValue? DirectFind(TKey key) => _dbContext.Find<TValue>(key);
     }
 }
