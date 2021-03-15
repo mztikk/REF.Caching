@@ -47,7 +47,7 @@ namespace REF.Caching
             }
         }
 
-        public void Add(TKey key, TValue invalidkey)
+        public void Add(TKey key, TValue value)
         {
             s_lock.Wait();
 
@@ -55,9 +55,9 @@ namespace REF.Caching
             {
                 if (Find(key) is null)
                 {
-                    _dbContext.Add(invalidkey);
-                    _memoryCache.Add(key, invalidkey);
-                    _logger.LogDebug("'{key}' added to {Type} with value '{value}'", key, GetType(), invalidkey.ToString());
+                    _dbContext.Add(value);
+                    _memoryCache.Add(key, value);
+                    _logger.LogDebug("'{key}' added to {Type} with value '{value}'", key, GetType(), value.ToString());
                     _dbContext.SaveChanges();
                 }
                 else
@@ -85,14 +85,14 @@ namespace REF.Caching
 
         protected virtual TValue? Find(TKey key)
         {
-            if (_memoryCache.TryGet(key, out TValue? invalidkey))
+            if (_memoryCache.TryGet(key, out TValue? value))
             {
-                return invalidkey;
+                return value;
             }
-            if ((invalidkey = DirectFind(key)) is not null)
+            if ((value = DirectFind(key)) is not null)
             {
-                _memoryCache.Add(key, invalidkey);
-                return invalidkey;
+                _memoryCache.Add(key, value);
+                return value;
             }
 
             return null;
